@@ -1,0 +1,2453 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeverVPN Network</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #FF6600;
+            --accent-color: #FF6600;
+            --negative-color: #FF3B30;
+            --positive-color: #34C759;
+            --button-color: #FF6600;
+            --content-color: #FFFFFF;
+            --subtitle-color: #8E8E93;
+            --app-background: #000000;
+            --button-background: #1C1C1E;
+            --line-color: rgba(255, 255, 255, 0.1);
+            --glass-bg: rgba(28, 28, 30, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+            --notification-bg: #1C1C1E;
+            --notification-border: rgba(255, 255, 255, 0.1);
+        }
+
+        .theme-light {
+            --primary-color: #FF6600;
+            --accent-color: #FF6600;
+            --content-color: #000000;
+            --subtitle-color: #546E7A;
+            --app-background: #F5F5F7;
+            --button-background: #FFFFFF;
+            --line-color: rgba(0, 0, 0, 0.1);
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --notification-bg: #FFFFFF;
+            --notification-border: rgba(0, 0, 0, 0.1);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --content-color: #FFFFFF;
+                --subtitle-color: #8E8E93;
+                --app-background: #000000;
+                --button-background: #1C1C1E;
+                --line-color: rgba(255, 255, 255, 0.1);
+                --glass-bg: rgba(28, 28, 30, 0.7);
+                --glass-border: rgba(255, 255, 255, 0.1);
+                --notification-bg: #1C1C1E;
+                --notification-border: rgba(255, 255, 255, 0.1);
+            }
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        body {
+            background-color: var(--app-background);
+            color: var(--content-color);
+            line-height: 1.6;
+            min-height: 100vh;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+
+        /* Header Styles */
+        header {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 12px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--line-color);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-large {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+
+        .logo-vn {
+            width: 60px;
+            height: 60px;
+            background: #000000;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 28px;
+            color: #FF6600;
+            box-shadow: 0 4px 15px rgba(255, 102, 0, 0.5);
+            background: linear-gradient(135deg, #000000, #1a1a1a);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .logo-vn::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent,
+                rgba(255, 102, 0, 0.4),
+                rgba(255, 153, 0, 0.6),
+                rgba(255, 102, 0, 0.4),
+                transparent
+            );
+            animation: shine 3s infinite linear;
+            transform: rotate(45deg);
+        }
+
+        @keyframes shine {
+            0% {
+                transform: translateX(-100%) translateY(-100%) rotate(45deg);
+            }
+            100% {
+                transform: translateX(100%) translateY(100%) rotate(45deg);
+            }
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .balance {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 8px 12px;
+            border-radius: 10px;
+            font-weight: 600;
+            border: 1px solid var(--glass-border);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 120px;
+        }
+
+        .balance span {
+            color: var(--negative-color);
+        }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), #FF9933);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            box-shadow: 0 4px 10px rgba(255, 102, 0, 0.3);
+        }
+
+        /* Main Content */
+        .dashboard {
+            padding: 20px 0;
+        }
+
+        .card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 14px;
+            padding: 20px;
+            margin-bottom: 16px;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
+        }
+
+        .card-title {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: var(--content-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Status Section */
+        .status-info {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+        }
+
+        .status-label {
+            color: var(--subtitle-color);
+            font-size: 14px;
+        }
+
+        .status-value {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .days-left {
+            color: var(--accent-color);
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 16px 20px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+            font-size: 16px;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .btn-primary {
+            background: var(--button-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: var(--button-background);
+            color: var(--accent-color);
+            border: 1px solid var(--glass-border);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 102, 0, 0.1);
+        }
+
+        .btn-telegram {
+            background: #0088CC;
+            color: white;
+        }
+
+        .btn-telegram:hover {
+            background: #0077B3;
+            transform: translateY(-2px);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn-group .btn {
+            width: calc(50% - 5px);
+        }
+
+        /* Balance Section */
+        .balance-block {
+            text-align: center;
+            padding: 30px 20px;
+        }
+
+        .balance-amount {
+            font-family: 'Nunito', sans-serif;
+            font-size: 48px;
+            font-weight: 800;
+            color: var(--negative-color);
+            line-height: 63px;
+            letter-spacing: -1px;
+            margin: 10px 0;
+        }
+
+        .balance-subtitle {
+            font-weight: normal;
+            font-size: 14px;
+            color: var(--subtitle-color);
+            margin-bottom: 30px;
+        }
+
+        /* Referral Section */
+        .referral-block {
+            background: var(--button-background);
+            border-radius: 14px;
+            margin: 16px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .referral-images {
+            display: flex;
+            justify-content: center;
+            height: 60px;
+            gap: 10px;
+            margin: 10px 0 20px;
+        }
+
+        .referral-images img {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+        }
+
+        .referral-title {
+            font-size: 18px;
+            font-weight: 600;
+            line-height: 32px;
+            margin: 10px 0;
+            color: var(--content-color);
+        }
+
+        .referral-subtitle {
+            font-size: 14px;
+            font-weight: normal;
+            margin-bottom: 20px;
+            line-height: 20px;
+            color: var(--subtitle-color);
+        }
+
+        /* Instructions Section */
+        .instructions-title {
+            text-transform: uppercase;
+            font-size: 12px;
+            font-weight: normal;
+            color: var(--subtitle-color);
+            line-height: 16px;
+            padding: 16px;
+            margin: 16px 16px 1px;
+        }
+
+        .instructions-list {
+            background: var(--button-background);
+            border-radius: 14px;
+            margin: 0 16px;
+        }
+
+        .instruction-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid var(--line-color);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .instruction-item:last-child {
+            border-bottom: none;
+        }
+
+        .instruction-item:hover {
+            background: rgba(255, 102, 0, 0.05);
+        }
+
+        .instruction-icon {
+            width: 68px;
+            height: 28px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .instruction-icon svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .instruction-name {
+            flex-grow: 1;
+            font-weight: normal;
+            font-size: 16px;
+            color: var(--content-color);
+        }
+
+        .instruction-arrow {
+            padding: 15px 16px;
+        }
+
+        .instruction-arrow svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--glass-bg);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border-radius: 14px;
+            padding: 20px;
+            width: 90%;
+            max-width: 400px;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--line-color);
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: var(--content-color);
+            font-size: 24px;
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 5px;
+        }
+
+        .close-modal:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--subtitle-color);
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--line-color);
+            border-radius: 8px;
+            background: var(--button-background);
+            color: var(--content-color);
+            font-size: 16px;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        /* Login Page */
+        .login-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            background: var(--app-background);
+        }
+
+        .login-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border-radius: 20px;
+            padding: 40px 30px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
+        }
+
+        .login-title {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: var(--content-color);
+        }
+
+        .login-subtitle {
+            color: var(--subtitle-color);
+            margin-bottom: 30px;
+        }
+
+        .auth-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* Sidebar Menu */
+        .sidebar-toggle {
+            background: none;
+            border: none;
+            color: var(--content-color);
+            font-size: 20px;
+            cursor: pointer;
+            padding: 5px;
+            background: var(--glass-bg);
+            border-radius: 8px;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 300px;
+            height: 100%;
+            background: var(--glass-bg);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            transition: right 0.3s ease;
+            z-index: 1000;
+            padding: 20px;
+            border-left: 1px solid var(--glass-border);
+        }
+
+        .sidebar.active {
+            right: 0;
+        }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--line-color);
+        }
+
+        .close-sidebar {
+            background: none;
+            border: none;
+            color: var(--content-color);
+            font-size: 20px;
+            cursor: pointer;
+            background: var(--glass-bg);
+            border-radius: 5px;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 15px;
+        }
+
+        .sidebar-menu a {
+            color: var(--content-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+
+        .sidebar-menu a:hover {
+            background: rgba(255, 102, 0, 0.1);
+        }
+
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            display: none;
+            backdrop-filter: blur(3px);
+            -webkit-backdrop-filter: blur(3px);
+        }
+
+        .sidebar-overlay.active {
+            display: block;
+        }
+
+        /* Instructions Modal */
+        .instructions-modal-content {
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .platform-instructions {
+            margin-bottom: 20px;
+        }
+
+        .platform-title {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: var(--content-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .platform-steps {
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        .platform-steps li {
+            margin-bottom: 8px;
+            color: var(--content-color);
+        }
+
+        .download-links {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .download-link {
+            background: var(--button-background);
+            border: 1px solid var(--line-color);
+            padding: 8px 12px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: var(--content-color);
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .download-link:hover {
+            background: rgba(255, 102, 0, 0.1);
+            border-color: var(--primary-color);
+        }
+
+        /* Notification Styles */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--notification-bg);
+            border: 1px solid var(--notification-border);
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            max-width: 350px;
+            z-index: 1100;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+
+        .notification.active {
+            transform: translateX(0);
+        }
+
+        .notification-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .notification-success {
+            background-color: var(--positive-color);
+            color: white;
+        }
+
+        .notification-error {
+            background-color: var(--negative-color);
+            color: white;
+        }
+
+        .notification-content {
+            flex-grow: 1;
+        }
+
+        .notification-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .notification-message {
+            font-size: 14px;
+            color: var(--subtitle-color);
+        }
+
+        .notification-close {
+            background: none;
+            border: none;
+            color: var(--subtitle-color);
+            cursor: pointer;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+        }
+
+        .notification-close:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        /* Settings Modal */
+        .settings-option {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--line-color);
+        }
+
+        .settings-option:last-child {
+            border-bottom: none;
+        }
+
+        .settings-label {
+            font-size: 16px;
+            color: var(--content-color);
+        }
+
+        .settings-control {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .theme-toggle {
+            background: var(--button-background);
+            border: 1px solid var(--line-color);
+            border-radius: 20px;
+            padding: 6px 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+
+        .theme-toggle.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        /* Input Modal */
+        .input-modal {
+            text-align: center;
+        }
+
+        .input-modal .form-group {
+            margin-bottom: 25px;
+        }
+
+        .input-modal input {
+            text-align: center;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        /* Config Download Modal */
+        .config-platforms {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .config-platform {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border: 1px solid var(--line-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .config-platform:hover {
+            background: rgba(255, 102, 0, 0.05);
+            border-color: var(--primary-color);
+        }
+
+        .config-platform.active {
+            background: rgba(255, 102, 0, 0.1);
+            border-color: var(--primary-color);
+        }
+
+        .config-platform-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-size: 20px;
+        }
+
+        .config-platform-info {
+            flex-grow: 1;
+        }
+
+        .config-platform-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .config-platform-desc {
+            font-size: 12px;
+            color: var(--subtitle-color);
+        }
+
+        /* Payment Modal */
+        .payment-amounts {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .payment-amount {
+            background: var(--button-background);
+            border: 1px solid var(--line-color);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .payment-amount:hover {
+            border-color: var(--primary-color);
+        }
+
+        .payment-amount.active {
+            background: rgba(255, 102, 0, 0.1);
+            border-color: var(--primary-color);
+        }
+
+        .payment-amount-value {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .payment-amount-bonus {
+            font-size: 12px;
+            color: var(--subtitle-color);
+        }
+
+        .payment-methods {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .payment-method {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border: 1px solid var(--line-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .payment-method:hover {
+            border-color: var(--primary-color);
+        }
+
+        .payment-method.active {
+            background: rgba(255, 102, 0, 0.1);
+            border-color: var(--primary-color);
+        }
+
+        .payment-method-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-size: 20px;
+        }
+
+        .payment-method-info {
+            flex-grow: 1;
+        }
+
+        .payment-method-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .payment-method-desc {
+            font-size: 12px;
+            color: var(--subtitle-color);
+        }
+
+        .payment-summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--line-color);
+        }
+
+        .payment-summary-item:last-child {
+            border-bottom: none;
+        }
+
+        /* Transaction History Modal */
+        .transactions-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .transaction-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--line-color);
+        }
+
+        .transaction-item:last-child {
+            border-bottom: none;
+        }
+
+        .transaction-info {
+            flex-grow: 1;
+        }
+
+        .transaction-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .transaction-date {
+            font-size: 12px;
+            color: var(--subtitle-color);
+        }
+
+        .transaction-amount {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .transaction-positive {
+            color: var(--positive-color);
+        }
+
+        .transaction-negative {
+            color: var(--negative-color);
+        }
+
+        /* Payment Steps */
+        .payment-step {
+            display: none;
+        }
+
+        .payment-step.active {
+            display: block;
+        }
+
+        .payment-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 16px;
+            }
+            
+            .balance-amount {
+                font-size: 40px;
+            }
+            
+            .btn {
+                padding: 14px 16px;
+                font-size: 14px;
+            }
+            
+            .notification {
+                right: 10px;
+                left: 10px;
+                max-width: none;
+            }
+            
+            .logo {
+                font-size: 16px;
+            }
+            
+            .logo-vn {
+                width: 32px;
+                height: 32px;
+                font-size: 16px;
+            }
+            
+            .avatar {
+                width: 32px;
+                height: 32px;
+                font-size: 14px;
+            }
+            
+            .balance {
+                font-size: 14px;
+                padding: 6px 10px;
+                max-width: 100px;
+            }
+            
+            .payment-amounts {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body class="theme-dark">
+    <!-- Login Page -->
+    <div id="loginPage" class="login-container">
+        <div class="login-card">
+            <div class="logo-large">
+                <div class="logo-vn">VN</div>
+            </div>
+            <h1 class="login-title">Безопасный доступ к интернету</h1>
+            <p class="login-subtitle">Защитите свою приватность с нашим VPN-сервисом</p>
+            
+            <div class="auth-buttons">
+                <button class="btn btn-telegram" id="telegramLogin">
+                    <i class="fab fa-telegram"></i>
+                    Войти через Telegram
+                </button>
+                <button class="btn btn-secondary" id="authCodeLogin">
+                    <i class="fas fa-key"></i>
+                    Войти по коду авторизации
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Telegram Auth Modal -->
+    <div id="telegramModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Вход через Telegram</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="telegram-auth">
+                <p>Для входа через Telegram:</p>
+                <ol>
+                    <li>Перейдите в нашего бота: <strong>@NeverVPNBot</strong></li>
+                    <li>Отправьте команду <code>/start</code></li>
+                    <li>Получите код авторизации</li>
+                    <li>Введите код ниже</li>
+                </ol>
+                <div class="form-group">
+                    <label for="authCode">Код авторизации</label>
+                    <input type="text" id="authCode" placeholder="Введите код из бота">
+                </div>
+                <button class="btn btn-telegram" id="confirmTelegramAuth">
+                    <i class="fab fa-telegram"></i>
+                    Подтвердить вход
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Direct Auth Code Modal -->
+    <div id="directAuthModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Вход по коду авторизации</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="form-group">
+                <label for="directAuthCode">Код авторизации</label>
+                <input type="text" id="directAuthCode" placeholder="Введите ваш код авторизации">
+                <p style="margin-top: 10px; font-size: 12px; color: var(--subtitle-color);">
+                    Получите код в нашем Telegram боте: @NeverVPNBot
+                </p>
+            </div>
+            <button class="btn btn-primary" id="confirmDirectAuth">
+                <i class="fas fa-sign-in-alt"></i>
+                Войти
+            </button>
+        </div>
+    </div>
+
+    <!-- Instructions Modal -->
+    <div id="instructionsModal" class="modal">
+        <div class="modal-content instructions-modal-content">
+            <div class="modal-header">
+                <h3>Инструкции по подключению</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div id="instructionsContent">
+                <!-- Content will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Настройки</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="settings-options">
+                <div class="settings-option">
+                    <div class="settings-label">Тема</div>
+                    <div class="settings-control">
+                        <button class="theme-toggle" data-theme="dark">Темная</button>
+                        <button class="theme-toggle" data-theme="light">Светлая</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div id="paymentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Пополнение баланса</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            
+            <!-- Step 1: Amount Selection -->
+            <div class="payment-step active" id="paymentStep1">
+                <div class="payment-amounts">
+                    <div class="payment-amount" data-amount="100">
+                        <div class="payment-amount-value">100 ₽</div>
+                        <div class="payment-amount-bonus">+0 ₽ бонус</div>
+                    </div>
+                    <div class="payment-amount" data-amount="200">
+                        <div class="payment-amount-value">200 ₽</div>
+                        <div class="payment-amount-bonus">+10 ₽ бонус</div>
+                    </div>
+                    <div class="payment-amount" data-amount="500">
+                        <div class="payment-amount-value">500 ₽</div>
+                        <div class="payment-amount-bonus">+50 ₽ бонус</div>
+                    </div>
+                    <div class="payment-amount" data-amount="1000">
+                        <div class="payment-amount-value">1000 ₽</div>
+                        <div class="payment-amount-bonus">+150 ₽ бонус</div>
+                    </div>
+                </div>
+                <button class="btn btn-primary" id="continueToPaymentMethod" disabled>
+                    Продолжить
+                </button>
+            </div>
+            
+            <!-- Step 2: Payment Method Selection -->
+            <div class="payment-step" id="paymentStep2">
+                <div class="payment-methods">
+                    <div class="payment-method" data-method="cryptobot">
+                        <div class="payment-method-icon">
+                            <i class="fas fa-coins"></i>
+                        </div>
+                        <div class="payment-method-info">
+                            <div class="payment-method-name">CryptoBot</div>
+                            <div class="payment-method-desc">Биткоин, USDT, Toncoin</div>
+                        </div>
+                    </div>
+                    <div class="payment-method" data-method="card">
+                        <div class="payment-method-icon">
+                            <i class="fas fa-credit-card"></i>
+                        </div>
+                        <div class="payment-method-info">
+                            <div class="payment-method-name">Банковская карта</div>
+                            <div class="payment-method-desc">Visa, Mastercard, МИР</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="payment-navigation">
+                    <button class="btn btn-secondary" id="backToAmount">
+                        Назад
+                    </button>
+                    <button class="btn btn-primary" id="continueToPaymentSummary" disabled>
+                        Продолжить
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Step 3: Payment Summary -->
+            <div class="payment-step" id="paymentStep3">
+                <div class="payment-summary">
+                    <div class="payment-summary-item">
+                        <span>Сумма пополнения:</span>
+                        <span id="paymentAmount">0 ₽</span>
+                    </div>
+                    <div class="payment-summary-item">
+                        <span>Бонус:</span>
+                        <span id="paymentBonus">0 ₽</span>
+                    </div>
+                    <div class="payment-summary-item" style="font-weight: 600; margin-top: 10px;">
+                        <span>Итого к зачислению:</span>
+                        <span id="paymentTotal">0 ₽</span>
+                    </div>
+                    <div class="payment-summary-item">
+                        <span>Способ оплаты:</span>
+                        <span id="paymentMethodName">-</span>
+                    </div>
+                </div>
+                <div class="payment-navigation">
+                    <button class="btn btn-secondary" id="backToPaymentMethod">
+                        Назад
+                    </button>
+                    <button class="btn btn-primary" id="proceedToPayment">
+                        <i class="fas fa-external-link-alt"></i> Перейти к оплате
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Transaction History Modal -->
+    <div id="transactionHistoryModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>История операций</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="transactions-list" id="transactionsList">
+                <!-- Transactions will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Config Download Modal -->
+    <div id="configModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Скачать конфигурацию VPN</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="config-platforms">
+                <div class="config-platform" data-platform="windows">
+                    <div class="config-platform-icon">
+                        <i class="fab fa-windows"></i>
+                    </div>
+                    <div class="config-platform-info">
+                        <div class="config-platform-name">Windows</div>
+                        <div class="config-platform-desc">OpenVPN Client</div>
+                    </div>
+                </div>
+                <div class="config-platform" data-platform="android">
+                    <div class="config-platform-icon">
+                        <i class="fab fa-android"></i>
+                    </div>
+                    <div class="config-platform-info">
+                        <div class="config-platform-name">Android</div>
+                        <div class="config-platform-desc">OpenVPN Connect</div>
+                    </div>
+                </div>
+                <div class="config-platform" data-platform="ios">
+                    <div class="config-platform-icon">
+                        <i class="fab fa-apple"></i>
+                    </div>
+                    <div class="config-platform-info">
+                        <div class="config-platform-name">iOS</div>
+                        <div class="config-platform-desc">OpenVPN Connect</div>
+                    </div>
+                </div>
+                <div class="config-platform" data-platform="macos">
+                    <div class="config-platform-icon">
+                        <i class="fab fa-apple"></i>
+                    </div>
+                    <div class="config-platform-info">
+                        <div class="config-platform-name">MacOS</div>
+                        <div class="config-platform-desc">Tunnelblick</div>
+                    </div>
+                </div>
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-primary" id="downloadConfig" disabled>
+                    <i class="fas fa-download"></i> Скачать конфигурацию
+                </button>
+                <button class="btn btn-secondary" id="viewInstructions">
+                    <i class="fas fa-book"></i> Инструкция по установке
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Extend Subscription Modal -->
+    <div id="extendSubscriptionModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Продление подписки</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="form-group">
+                <label for="daysToExtend">На сколько дней продлить подписку?</label>
+                <input type="number" id="daysToExtend" min="1" value="30" placeholder="Введите количество дней">
+            </div>
+            <div class="payment-summary">
+                <div class="payment-summary-item">
+                    <span>Стоимость дня:</span>
+                    <span>5 ₽</span>
+                </div>
+                <div class="payment-summary-item">
+                    <span>Количество дней:</span>
+                    <span id="extendDaysCount">30</span>
+                </div>
+                <div class="payment-summary-item" style="font-weight: 600;">
+                    <span>Итого к списанию:</span>
+                    <span id="extendTotal">150 ₽</span>
+                </div>
+            </div>
+            <button class="btn btn-primary" id="confirmExtendSubscription">
+                Продлить подписку
+            </button>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboardPage" style="display: none;">
+        <header>
+            <div class="container">
+                <div class="header-content">
+                    <div class="logo">
+                        <div class="logo-vn">VN</div>
+                        NeverVPN Network
+                    </div>
+                    <div class="user-info">
+                        <div class="balance">Баланс: <span id="userBalance">0</span> <span class="currency-symbol">₽</span></div>
+                        <div class="avatar" id="userAvatar">U</div>
+                        <button class="sidebar-toggle" id="sidebarToggle">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="dashboard">
+            <div class="container">
+                <!-- Balance Block -->
+                <div class="balance-block">
+                    <h4>Баланс</h4>
+                    <div class="balance-amount" id="currentBalance">0 <span class="currency-symbol">₽</span></div>
+                    <div class="balance-subtitle" id="balanceSubtitle">Для продолжения работы пополните баланс</div>
+                    <button class="btn btn-primary" id="addBalance">
+                        <i class="fas fa-credit-card"></i> Пополнить баланс
+                    </button>
+                    <div class="btn-group">
+                        <button class="btn btn-secondary" id="transactionHistory">
+                            <i class="fas fa-history"></i> История
+                        </button>
+                        <button class="btn btn-secondary" id="extendSubscription">
+                            <i class="fas fa-plus"></i> Продлить
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Status Card -->
+                <div class="card">
+                    <h2 class="card-title"><i class="fas fa-shield-alt"></i> Статус VPN</h2>
+                    <div class="status-info">
+                        <div class="status-item">
+                            <div class="status-label">Статус:</div>
+                            <div class="status-value" id="vpnStatus">Неактивен</div>
+                        </div>
+                        <div class="status-item">
+                            <div class="status-label">Дней осталось:</div>
+                            <div class="status-value" id="daysLeft">0</div>
+                        </div>
+                        <div class="status-item">
+                            <div class="status-label">Тариф:</div>
+                            <div class="status-value">5 ₽/день</div>
+                        </div>
+                        <button class="btn btn-primary" id="connectVpn">
+                            <i class="fas fa-plug"></i> Подключить VPN
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Referral Card -->
+                <div class="referral-block">
+                    <div class="referral-images">
+                        <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjYwIiBoZWlnaHQ9IjYwIiByeD0iMTIiIGZpbGw9IiMwMDdBRkYiLz4KPHN2ZyB4PSIyMCIgeT0iMTgiIHdpZHRoPSIyMCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDIwIDI0IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cGF0aCBkPSJNMTUgMTZIMTdWMTJIMjBMMTAgMEwwIDEySDNWMTZINS4wNjZDNi4xMzMgMTYgNy4xIDExLjY0IDcuMSAxMkM3LjEgMTQuNzYgOC4xNjY3IDE2IDEwLjMgMTZDMTEuMzY2NyAxNiAxMi4yMzMzIDE1LjIgMTIuOSAxNEMxMy41NjY3IDE0LjggMTQuNDMzMyAxNiAxNS43IDE2QzE3LjgzMzMgMTYgMTguOSAxNC43NiAxOC45IDEyQzE4LjkgMTEuNjQgMTkuODY2NyAxNiAyMC45MzMzIDE2SDIzVjhIMjBMMTAgLTRMMCA4SDNWMTZINS4wNjZDNi4xMzMgMTYgNy4xIDExLjY0IDcuMSAxMkM3LjEgMTQuNzYgOC4xNjY3IDE2IDEwLjMgMTZDMTEuMzY2NyAxNiAxMi4yMzMzIDE1LjIgMTIuOSAxNEMxMy41NjY3IDE0LjggMTQuNDMzMyAxNiAxNS43IDE2WiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+Cjwvc3ZnPg==" alt="Punch">
+                        <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjYwIiBoZWlnaHQ9IjYwIiByeD0iMTIiIGZpbGw9IiNGRjZCMzUiLz4KPHN2ZyB4PSIyMCIgeT0iMTgiIHdpZHRoPSIyMCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDIwIDI0IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cGF0aCBkPSJNMTUgMTZIMTdWMTJIMjBMMTAgMEwwIDEySDNWMTZINS4wNjZDNi4xMzMgMTYgNy4xIDExLjY0IDcuMSAxMkM3LjEgMTQuNzYgOC4xNjY3IDE2IDEwLjMgMTZDMTEuMzY2NyAxNiAxMi4yMzMzIDE1LjIgMTIuOSAxNEMxMy41NjY3IDE0LjggMTQuNDMzMyAxNiAxNS43IDE2QzE3LjgzMzMgMTYgMTguOSAxNC43NiAxOC45IDEyQzE4LjkgMTEuNjQgMTkuODY2NyAxNiAyMC45MzMzIDE2SDIzVjhIMjBMMTAgLTRMMCA4SDNWMTZINS4wNjZDNi4xMzMgMTYgNy4xIDExLjY0IDcuMSAxMkM3LjEgMTQuNzYgOC4xNjY3IDE2IDEwLjMgMTZDMTEuMzY2NyAxNiAxMi4yMzMzIDE1LjIgMTIuOSAxNEMxNS41NjY3IDE0LjggMTQuNDMzMyAxNiAxNS43IDE2WiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+Cjwvc3ZnPg==" alt="Punch Inverted">
+                    </div>
+                    <h4 class="referral-title">Пригласи друга и получи 50 ₽ на баланс</h4>
+                    <div class="referral-subtitle">Отправьте ссылку другу. Когда ваш друг зайдёт на наш сайт и зарегистрируется, вы получите 50 ₽ на баланс!</div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" id="shareReferral">
+                            <i class="fas fa-share-alt"></i> Отправить
+                        </button>
+                        <button class="btn btn-secondary" id="copyReferral">
+                            <i class="far fa-copy"></i> Скопировать
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Instructions Section -->
+                <h3 class="instructions-title">Видеоинструкции</h3>
+                <div class="instructions-list">
+                    <div class="instruction-item" data-platform="ios">
+                        <div class="instruction-icon">
+                            <i class="fab fa-apple"></i>
+                        </div>
+                        <div class="instruction-name">iOS (iPhone, iPad)</div>
+                        <div class="instruction-arrow">
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </div>
+                    <div class="instruction-item" data-platform="android">
+                        <div class="instruction-icon">
+                            <i class="fab fa-android"></i>
+                        </div>
+                        <div class="instruction-name">Android</div>
+                        <div class="instruction-arrow">
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </div>
+                    <div class="instruction-item" data-platform="macos">
+                        <div class="instruction-icon">
+                            <i class="fab fa-apple"></i>
+                        </div>
+                        <div class="instruction-name">MacOS</div>
+                        <div class="instruction-arrow">
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </div>
+                    <div class="instruction-item" data-platform="windows">
+                        <div class="instruction-icon">
+                            <i class="fab fa-windows"></i>
+                        </div>
+                        <div class="instruction-name">Windows</div>
+                        <div class="instruction-arrow">
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Sidebar Menu -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3>Меню</h3>
+            <button class="close-sidebar" id="closeSidebar">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="https://t.me/NeverVPNSupport" target="_blank"><i class="fas fa-headset"></i> Техподдержка</a></li>
+            <li><a href="https://nevervpn.net/rules" target="_blank"><i class="fas fa-file-alt"></i> Правила</a></li>
+            <li><a href="#" id="settingsBtn"><i class="fas fa-cog"></i> Настройки</a></li>
+            <li><a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Выйти</a></li>
+        </ul>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notificationContainer"></div>
+
+    <script>
+        // API endpoints
+        const API_BASE = 'http://localhost:5000/api';
+        const BOT_USERNAME = '@NeverVPNBot';
+        const DAILY_RATE = 5; // 5 руб/день
+        const REFERRAL_BONUS = 50; // 50 руб за приглашение
+
+        class NeverVPN {
+            constructor() {
+                this.userData = null;
+                this.currentTheme = localStorage.getItem('nevervpn_theme') || 'dark';
+                this.selectedPlatform = null;
+                this.selectedAmount = null;
+                this.selectedMethod = null;
+                this.paymentStep = 1;
+                this.init();
+            }
+
+            init() {
+                this.applyTheme();
+                this.setupEventListeners();
+                this.checkAuthStatus();
+            }
+
+            setupEventListeners() {
+                // Auth buttons
+                document.getElementById('telegramLogin').addEventListener('click', () => this.showTelegramAuth());
+                document.getElementById('authCodeLogin').addEventListener('click', () => this.showDirectAuth());
+                
+                // Modal controls
+                document.querySelectorAll('.close-modal').forEach(btn => {
+                    btn.addEventListener('click', () => this.closeAllModals());
+                });
+
+                // Forms
+                document.getElementById('confirmTelegramAuth').addEventListener('click', () => this.handleTelegramAuth());
+                document.getElementById('confirmDirectAuth').addEventListener('click', () => this.handleDirectAuth());
+
+                // Dashboard buttons
+                document.getElementById('copyReferral').addEventListener('click', () => this.copyReferralLink());
+                document.getElementById('shareReferral').addEventListener('click', () => this.shareReferralLink());
+                document.getElementById('sidebarToggle').addEventListener('click', () => this.openSidebar());
+                document.getElementById('closeSidebar').addEventListener('click', () => this.closeSidebar());
+                document.getElementById('sidebarOverlay').addEventListener('click', () => this.closeSidebar());
+                document.getElementById('logoutBtn').addEventListener('click', (e) => this.handleLogout(e));
+                document.getElementById('settingsBtn').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this.showSettingsModal();
+                    this.closeSidebar();
+                });
+                
+                // VPN controls
+                document.getElementById('connectVpn').addEventListener('click', () => this.showConfigModal());
+                document.getElementById('addBalance').addEventListener('click', () => this.showPaymentModal());
+                document.getElementById('extendSubscription').addEventListener('click', () => this.showExtendSubscriptionModal());
+                document.getElementById('transactionHistory').addEventListener('click', () => this.showTransactionHistory());
+
+                // Instructions
+                document.querySelectorAll('.instruction-item').forEach(item => {
+                    item.addEventListener('click', () => {
+                        const platform = item.getAttribute('data-platform');
+                        this.showInstructions(platform);
+                    });
+                });
+
+                // Settings
+                document.querySelectorAll('.theme-toggle').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const theme = btn.getAttribute('data-theme');
+                        this.setTheme(theme);
+                    });
+                });
+
+                // Config modal
+                document.querySelectorAll('.config-platform').forEach(platform => {
+                    platform.addEventListener('click', () => {
+                        document.querySelectorAll('.config-platform').forEach(p => p.classList.remove('active'));
+                        platform.classList.add('active');
+                        this.selectedPlatform = platform.getAttribute('data-platform');
+                        document.getElementById('downloadConfig').disabled = false;
+                    });
+                });
+
+                document.getElementById('downloadConfig').addEventListener('click', () => {
+                    if (this.selectedPlatform) {
+                        this.downloadConfig(this.selectedPlatform);
+                    }
+                });
+
+                document.getElementById('viewInstructions').addEventListener('click', () => {
+                    if (this.selectedPlatform) {
+                        this.showInstructions(this.selectedPlatform);
+                        this.closeAllModals();
+                    } else {
+                        this.showNotification('Ошибка', 'Выберите платформу для просмотра инструкций', 'error');
+                    }
+                });
+
+                // Payment modal - Step 1: Amount selection
+                document.querySelectorAll('.payment-amount').forEach(amount => {
+                    amount.addEventListener('click', () => {
+                        document.querySelectorAll('.payment-amount').forEach(a => a.classList.remove('active'));
+                        amount.classList.add('active');
+                        this.selectedAmount = amount.getAttribute('data-amount');
+                        document.getElementById('continueToPaymentMethod').disabled = false;
+                    });
+                });
+
+                document.getElementById('continueToPaymentMethod').addEventListener('click', () => {
+                    this.goToPaymentStep(2);
+                });
+
+                // Payment modal - Step 2: Method selection
+                document.querySelectorAll('.payment-method').forEach(method => {
+                    method.addEventListener('click', () => {
+                        document.querySelectorAll('.payment-method').forEach(m => m.classList.remove('active'));
+                        method.classList.add('active');
+                        this.selectedMethod = method.getAttribute('data-method');
+                        document.getElementById('continueToPaymentSummary').disabled = false;
+                    });
+                });
+
+                document.getElementById('backToAmount').addEventListener('click', () => {
+                    this.goToPaymentStep(1);
+                });
+
+                document.getElementById('continueToPaymentSummary').addEventListener('click', () => {
+                    this.updatePaymentSummary();
+                    this.goToPaymentStep(3);
+                });
+
+                // Payment modal - Step 3: Summary
+                document.getElementById('backToPaymentMethod').addEventListener('click', () => {
+                    this.goToPaymentStep(2);
+                });
+
+                document.getElementById('proceedToPayment').addEventListener('click', () => {
+                    if (this.selectedAmount && this.selectedMethod) {
+                        this.processPayment(this.selectedAmount, this.selectedMethod);
+                    }
+                });
+
+                // Extend subscription modal
+                document.getElementById('daysToExtend').addEventListener('input', (e) => {
+                    this.updateExtendSummary(e.target.value);
+                });
+
+                document.getElementById('confirmExtendSubscription').addEventListener('click', () => {
+                    const days = document.getElementById('daysToExtend').value;
+                    this.extendSubscription(days);
+                });
+            }
+
+            applyTheme() {
+                document.querySelectorAll('.theme-toggle').forEach(btn => {
+                    btn.classList.remove('active');
+                    if (btn.getAttribute('data-theme') === this.currentTheme) {
+                        btn.classList.add('active');
+                    }
+                });
+
+                document.body.className = `theme-${this.currentTheme}`;
+            }
+
+            setTheme(theme) {
+                this.currentTheme = theme;
+                localStorage.setItem('nevervpn_theme', theme);
+                this.applyTheme();
+                this.closeAllModals();
+                this.showNotification(
+                    'Тема изменена',
+                    'Настройки темы применены',
+                    'success'
+                );
+            }
+
+            goToPaymentStep(step) {
+                // Hide all steps
+                document.querySelectorAll('.payment-step').forEach(stepEl => {
+                    stepEl.classList.remove('active');
+                });
+                
+                // Show selected step
+                document.getElementById(`paymentStep${step}`).classList.add('active');
+                this.paymentStep = step;
+            }
+
+            async checkAuthStatus() {
+                try {
+                    const token = localStorage.getItem('nevervpn_token');
+                    if (token) {
+                        const response = await this.apiCall('/user/profile');
+                        if (response.success) {
+                            this.userData = response.data;
+                            this.showDashboard();
+                        } else {
+                            this.showLogin();
+                        }
+                    } else {
+                        this.showLogin();
+                    }
+                } catch (error) {
+                    console.error('Auth check failed:', error);
+                    this.showLogin();
+                }
+            }
+
+            showLogin() {
+                document.getElementById('loginPage').style.display = 'flex';
+                document.getElementById('dashboardPage').style.display = 'none';
+                this.closeAllModals();
+            }
+
+            showDashboard() {
+                document.getElementById('loginPage').style.display = 'none';
+                document.getElementById('dashboardPage').style.display = 'block';
+                this.updateDashboard();
+            }
+
+            updateDashboard() {
+                if (!this.userData) return;
+
+                // Update user info
+                document.getElementById('userBalance').textContent = this.userData.balance.toFixed(0);
+                document.getElementById('currentBalance').textContent = `${this.userData.balance.toFixed(0)}`;
+                document.getElementById('daysLeft').textContent = this.userData.days_left || 0;
+                document.getElementById('userAvatar').textContent = this.userData.first_name ? this.userData.first_name[0].toUpperCase() : 'U';
+                
+                // Update VPN status
+                const vpnStatus = document.getElementById('vpnStatus');
+                const isActive = this.userData.is_active && this.userData.days_left > 0;
+                vpnStatus.textContent = isActive ? 'Активен' : 'Неактивен';
+                vpnStatus.className = isActive ? 'status-value days-left' : 'status-value';
+                
+                // Update balance subtitle
+                const balanceSubtitle = document.getElementById('balanceSubtitle');
+                if (this.userData.balance <= 0) {
+                    balanceSubtitle.textContent = 'Для продолжения работы пополните баланс';
+                } else if (!isActive) {
+                    balanceSubtitle.textContent = 'Активируйте подписку для использования VPN';
+                } else {
+                    balanceSubtitle.textContent = 'Баланс пополнен, VPN активен';
+                }
+            }
+
+            showTelegramAuth() {
+                this.closeAllModals();
+                document.getElementById('telegramModal').classList.add('active');
+            }
+
+            showDirectAuth() {
+                this.closeAllModals();
+                document.getElementById('directAuthModal').classList.add('active');
+            }
+
+            showSettingsModal() {
+                this.closeAllModals();
+                document.getElementById('settingsModal').classList.add('active');
+            }
+
+            showPaymentModal() {
+                this.closeAllModals();
+                document.getElementById('paymentModal').classList.add('active');
+                this.selectedAmount = null;
+                this.selectedMethod = null;
+                this.paymentStep = 1;
+                this.goToPaymentStep(1);
+                document.querySelectorAll('.payment-amount').forEach(a => a.classList.remove('active'));
+                document.querySelectorAll('.payment-method').forEach(m => m.classList.remove('active'));
+                document.getElementById('continueToPaymentMethod').disabled = true;
+                document.getElementById('continueToPaymentSummary').disabled = true;
+            }
+
+            updatePaymentSummary() {
+                const amount = this.selectedAmount ? parseInt(this.selectedAmount) : 0;
+                let bonus = 0;
+                
+                if (amount === 200) bonus = 10;
+                else if (amount === 500) bonus = 50;
+                else if (amount === 1000) bonus = 150;
+                
+                document.getElementById('paymentAmount').textContent = amount + ' ₽';
+                document.getElementById('paymentBonus').textContent = bonus + ' ₽';
+                document.getElementById('paymentTotal').textContent = (amount + bonus) + ' ₽';
+                
+                // Update payment method name
+                let methodName = '';
+                if (this.selectedMethod === 'cryptobot') methodName = 'CryptoBot';
+                else if (this.selectedMethod === 'card') methodName = 'Банковская карта';
+                document.getElementById('paymentMethodName').textContent = methodName;
+            }
+
+            showExtendSubscriptionModal() {
+                this.closeAllModals();
+                document.getElementById('extendSubscriptionModal').classList.add('active');
+                this.updateExtendSummary(30); // Default to 30 days
+            }
+
+            updateExtendSummary(days) {
+                const total = days * DAILY_RATE;
+                document.getElementById('extendDaysCount').textContent = days;
+                document.getElementById('extendTotal').textContent = total + ' ₽';
+            }
+
+            showConfigModal() {
+                if (!this.userData || !this.userData.is_active || this.userData.days_left <= 0) {
+                    this.showNotification(
+                        'Ошибка',
+                        'Для подключения VPN необходимо активировать подписку',
+                        'error'
+                    );
+                    return;
+                }
+                
+                this.closeAllModals();
+                document.getElementById('configModal').classList.add('active');
+                this.selectedPlatform = null;
+                document.querySelectorAll('.config-platform').forEach(p => p.classList.remove('active'));
+                document.getElementById('downloadConfig').disabled = true;
+            }
+
+            showTransactionHistory() {
+                this.closeAllModals();
+                document.getElementById('transactionHistoryModal').classList.add('active');
+                this.loadTransactionHistory();
+            }
+
+            closeAllModals() {
+                document.querySelectorAll('.modal').forEach(modal => {
+                    modal.classList.remove('active');
+                });
+            }
+
+            async handleTelegramAuth() {
+                const authCode = document.getElementById('authCode').value.trim();
+                
+                if (!authCode) {
+                    this.showNotification('Ошибка', 'Введите код авторизации', 'error');
+                    return;
+                }
+
+                try {
+                    const response = await this.apiCall('/auth/telegram', 'POST', { code: authCode });
+                    
+                    if (response.success) {
+                        localStorage.setItem('nevervpn_token', response.data.token);
+                        this.userData = response.data.user;
+                        this.showDashboard();
+                        this.closeAllModals();
+                        this.showNotification('Успех', 'Вход через Telegram выполнен', 'success');
+                    } else {
+                        this.showNotification('Ошибка', response.message || 'Неверный код авторизации', 'error');
+                    }
+                } catch (error) {
+                    console.error('Telegram auth failed:', error);
+                    this.showNotification('Ошибка', 'Ошибка соединения с сервером', 'error');
+                }
+            }
+
+            async handleDirectAuth() {
+                const authCode = document.getElementById('directAuthCode').value.trim();
+                
+                if (!authCode) {
+                    this.showNotification('Ошибка', 'Введите код авторизации', 'error');
+                    return;
+                }
+
+                try {
+                    const response = await this.apiCall('/auth/telegram', 'POST', { code: authCode });
+                    
+                    if (response.success) {
+                        localStorage.setItem('nevervpn_token', response.data.token);
+                        this.userData = response.data.user;
+                        this.showDashboard();
+                        this.closeAllModals();
+                        this.showNotification('Успех', 'Вход выполнен', 'success');
+                    } else {
+                        this.showNotification('Ошибка', response.message || 'Неверный код авторизации', 'error');
+                    }
+                } catch (error) {
+                    console.error('Direct auth failed:', error);
+                    this.showNotification('Ошибка', 'Ошибка соединения с сервером', 'error');
+                }
+            }
+
+            async processPayment(amount, method) {
+                try {
+                    const response = await this.apiCall('/payment/create', 'POST', { 
+                        amount: parseInt(amount),
+                        method: method
+                    });
+                    
+                    if (response.success) {
+                        this.closeAllModals();
+                        this.showNotification('Успех', `Платеж на ${amount} руб создан`, 'success');
+                        
+                        // Открываем ссылку для оплаты
+                        if (response.data.payment_url) {
+                            window.open(response.data.payment_url, '_blank');
+                        }
+                        
+                        // Обновляем баланс
+                        setTimeout(() => {
+                            this.checkAuthStatus();
+                        }, 2000);
+                    } else {
+                        this.showNotification('Ошибка', response.message || 'Ошибка создания платежа', 'error');
+                    }
+                } catch (error) {
+                    console.error('Payment error:', error);
+                    this.showNotification('Ошибка', 'Ошибка соединения с сервером', 'error');
+                }
+            }
+
+            async handleLogout(e) {
+                e.preventDefault();
+                
+                try {
+                    await this.apiCall('/auth/logout', 'POST');
+                } catch (error) {
+                    console.error('Logout error:', error);
+                } finally {
+                    localStorage.removeItem('nevervpn_token');
+                    this.userData = null;
+                    this.showLogin();
+                    this.closeSidebar();
+                    this.showNotification('Информация', 'Вы вышли из системы', 'success');
+                }
+            }
+
+            async extendSubscription(days) {
+                if (!days || isNaN(days) || days <= 0) {
+                    this.showNotification('Ошибка', 'Введите корректное количество дней', 'error');
+                    return;
+                }
+
+                const cost = days * DAILY_RATE;
+
+                if (this.userData.balance < cost) {
+                    this.showNotification('Ошибка', `Недостаточно средств. Нужно: ${cost} руб, на балансе: ${this.userData.balance} руб`, 'error');
+                    return;
+                }
+
+                try {
+                    const response = await this.apiCall('/subscription/extend', 'POST', { days: parseInt(days) });
+                    
+                    if (response.success) {
+                        this.userData.balance -= cost;
+                        this.userData.days_left += parseInt(days);
+                        this.userData.is_active = true;
+                        this.updateDashboard();
+                        this.closeAllModals();
+                        this.showNotification('Успех', `Подписка продлена на ${days} дней`, 'success');
+                    } else {
+                        this.showNotification('Ошибка', response.message || 'Ошибка продления подписки', 'error');
+                    }
+                } catch (error) {
+                    console.error('Subscription error:', error);
+                    this.showNotification('Ошибка', 'Ошибка соединения с сервером', 'error');
+                }
+            }
+
+            async loadTransactionHistory() {
+                try {
+                    const response = await this.apiCall('/user/transactions');
+                    
+                    if (response.success) {
+                        const transactions = response.data;
+                        const container = document.getElementById('transactionsList');
+                        container.innerHTML = '';
+                        
+                        if (transactions.length === 0) {
+                            container.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--subtitle-color);">Операций не найдено</div>';
+                            return;
+                        }
+                        
+                        transactions.forEach(transaction => {
+                            const date = new Date(transaction.created_at).toLocaleDateString('ru-RU');
+                            const time = new Date(transaction.created_at).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+                            
+                            const item = document.createElement('div');
+                            item.className = 'transaction-item';
+                            
+                            const isPositive = transaction.type === 'deposit' || transaction.type === 'referral';
+                            const amountClass = isPositive ? 'transaction-positive' : 'transaction-negative';
+                            const amountSign = isPositive ? '+' : '-';
+                            const amountText = `${amountSign}${transaction.amount} ₽`;
+                            
+                            let title = '';
+                            if (transaction.type === 'deposit') title = 'Пополнение баланса';
+                            else if (transaction.type === 'withdrawal') title = 'Списание за подписку';
+                            else if (transaction.type === 'referral') title = 'Бонус за приглашение';
+                            
+                            item.innerHTML = `
+                                <div class="transaction-info">
+                                    <div class="transaction-title">${title}</div>
+                                    <div class="transaction-date">${date} в ${time}</div>
+                                </div>
+                                <div class="transaction-amount ${amountClass}">${amountText}</div>
+                            `;
+                            
+                            container.appendChild(item);
+                        });
+                    } else {
+                        this.showNotification('Ошибка', 'Ошибка загрузки истории операций', 'error');
+                    }
+                } catch (error) {
+                    console.error('Transactions error:', error);
+                    this.showNotification('Ошибка', 'Ошибка соединения с сервером', 'error');
+                }
+            }
+
+            downloadConfig(platform) {
+                const configContent = `# NeverVPN Configuration
+client
+dev tun
+proto udp
+remote vpn.nevervpn.net 1194
+resolv-retry infinite
+nobind
+persist-key
+persist-tun
+remote-cert-tls server
+cipher AES-256-CBC
+auth SHA256
+verb 3
+<ca>
+-----BEGIN CERTIFICATE-----
+MIID...  # Здесь будет реальный сертификат
+-----END CERTIFICATE-----
+</ca>
+<cert>
+-----BEGIN CERTIFICATE-----
+MIID...  # Здесь будет пользовательский сертификат
+-----END CERTIFICATE-----
+</cert>
+<key>
+-----BEGIN PRIVATE KEY-----
+MIIE...  # Здесь будет приватный ключ
+-----END PRIVATE KEY-----
+</key>`;
+                
+                const blob = new Blob([configContent], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `nevervpn-config-${platform}.ovpn`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                this.showNotification('Успех', `Конфигурация для ${platform} скачана`, 'success');
+            }
+
+            showInstructions(platform) {
+                const instructions = {
+                    windows: {
+                        title: 'Windows',
+                        steps: [
+                            'Скачайте и установите OpenVPN Client с официального сайта',
+                            'Загрузите конфигурационный файл с нашего сайта',
+                            'Импортируйте файл в OpenVPN Client',
+                            'Подключитесь к серверу, используя ваши учетные данные'
+                        ],
+                        links: [
+                            { name: 'Скачать OpenVPN', url: 'https://openvpn.net/client-connect-vpn-for-windows/' },
+                            { name: 'Конфигурации', url: '#' }
+                        ]
+                    },
+                    android: {
+                        title: 'Android',
+                        steps: [
+                            'Установите приложение OpenVPN Connect из Google Play',
+                            'Загрузите конфигурационный файл с нашего сайта',
+                            'Импортируйте файл в приложение OpenVPN Connect',
+                            'Подключитесь к серверу, используя ваши учетные данные'
+                        ],
+                        links: [
+                            { name: 'Google Play', url: 'https://play.google.com/store/apps/details?id=net.openvpn.openvpn' },
+                            { name: 'Конфигурации', url: '#' }
+                        ]
+                    },
+                    ios: {
+                        title: 'iOS (iPhone, iPad)',
+                        steps: [
+                            'Установите приложение OpenVPN Connect из App Store',
+                            'Загрузите конфигурационный файл с нашего сайта',
+                            'Импортируйте файл в приложение OpenVPN Connect',
+                            'Подключитесь к серверу, используя ваши учетные данные'
+                        ],
+                        links: [
+                            { name: 'App Store', url: 'https://apps.apple.com/us/app/openvpn-connect/id590379981' },
+                            { name: 'Конфигурации', url: '#' }
+                        ]
+                    },
+                    macos: {
+                        title: 'MacOS',
+                        steps: [
+                            'Скачайте и установите Tunnelblick с официального сайта',
+                            'Загрузите конфигурационный файл с нашего сайта',
+                            'Импортируйте файл в Tunnelblick',
+                            'Подключитесь к серверу, используя ваши учетные данные'
+                        ],
+                        links: [
+                            { name: 'Скачать Tunnelblick', url: 'https://tunnelblick.net/' },
+                            { name: 'Конфигурации', url: '#' }
+                        ]
+                    }
+                };
+                
+                const instruction = instructions[platform] || {
+                    title: platform,
+                    steps: ['Инструкция в разработке'],
+                    links: []
+                };
+                
+                let content = `
+                    <div class="platform-instructions">
+                        <h3 class="platform-title">
+                            <i class="fab fa-${platform === 'windows' ? 'windows' : platform === 'android' ? 'android' : platform === 'ios' ? 'apple' : platform === 'macos' ? 'apple' : 'question'}"></i>
+                            ${instruction.title}
+                        </h3>
+                        <ol class="platform-steps">
+                `;
+                
+                instruction.steps.forEach(step => {
+                    content += `<li>${step}</li>`;
+                });
+                
+                content += `</ol>`;
+                
+                if (instruction.links.length > 0) {
+                    content += `<div class="download-links">`;
+                    instruction.links.forEach(link => {
+                        content += `<a href="${link.url}" class="download-link" target="_blank">${link.name}</a>`;
+                    });
+                    content += `</div>`;
+                }
+                
+                content += `</div>`;
+                
+                document.getElementById('instructionsContent').innerHTML = content;
+                document.getElementById('instructionsModal').classList.add('active');
+            }
+
+            copyReferralLink() {
+                const link = this.userData?.referral_link || 'https://nevervpn.net/ref/...';
+                this.copyToClipboard(link);
+                this.showNotification('Успех', 'Реферальная ссылка скопирована!', 'success');
+            }
+
+            shareReferralLink() {
+                const link = this.userData?.referral_link || 'https://nevervpn.net/ref/...';
+                const text = `Присоединяйся к NeverVPN Network! Безопасный и быстрый VPN. Используй мою ссылку: ${link}`;
+                
+                if (navigator.share) {
+                    navigator.share({
+                        title: 'NeverVPN Network',
+                        text: text,
+                        url: link
+                    });
+                } else {
+                    const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(text)}`;
+                    window.open(telegramUrl, '_blank');
+                    this.showNotification('Успех', 'Ссылка открыта для отправки', 'success');
+                }
+            }
+
+            copyToClipboard(text) {
+                navigator.clipboard.writeText(text).catch(err => {
+                    console.error('Copy failed:', err);
+                    // Fallback for older browsers
+                    const textArea = document.createElement('textarea');
+                    textArea.value = text;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                });
+            }
+
+            openSidebar() {
+                document.getElementById('sidebar').classList.add('active');
+                document.getElementById('sidebarOverlay').classList.add('active');
+            }
+
+            closeSidebar() {
+                document.getElementById('sidebar').classList.remove('active');
+                document.getElementById('sidebarOverlay').classList.remove('active');
+            }
+
+            showNotification(title, message, type = 'info') {
+                const notification = document.createElement('div');
+                notification.className = `notification`;
+                
+                const iconClass = type === 'success' ? 'fa-check' : 
+                                 type === 'error' ? 'fa-times' : 
+                                 'fa-info-circle';
+                
+                notification.innerHTML = `
+                    <div class="notification-icon notification-${type}">
+                        <i class="fas ${iconClass}"></i>
+                    </div>
+                    <div class="notification-content">
+                        <div class="notification-title">${title}</div>
+                        <div class="notification-message">${message}</div>
+                    </div>
+                    <button class="notification-close">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                
+                document.getElementById('notificationContainer').appendChild(notification);
+                
+                // Анимация появления
+                setTimeout(() => {
+                    notification.classList.add('active');
+                }, 10);
+                
+                // Закрытие по клику
+                notification.querySelector('.notification-close').addEventListener('click', () => {
+                    this.hideNotification(notification);
+                });
+                
+                // Автоматическое закрытие
+                setTimeout(() => {
+                    this.hideNotification(notification);
+                }, 5000);
+            }
+            
+            hideNotification(notification) {
+                notification.classList.remove('active');
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }
+
+            async apiCall(endpoint, method = 'GET', data = null) {
+                const token = localStorage.getItem('nevervpn_token');
+                const options = {
+                    method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                };
+
+                if (token) {
+                    options.headers['Authorization'] = `Bearer ${token}`;
+                }
+
+                if (data && method !== 'GET') {
+                    options.body = JSON.stringify(data);
+                }
+
+                try {
+                    const response = await fetch(API_BASE + endpoint, options);
+                    return await response.json();
+                } catch (error) {
+                    console.error('API call failed:', error);
+                    throw error;
+                }
+            }
+        }
+
+        // Инициализация приложения
+        document.addEventListener('DOMContentLoaded', () => {
+            new NeverVPN();
+        });
+
+        // Эмуляция API для демонстрации (удалите в продакшене)
+        if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+            window.mockAPI = {
+                async call(endpoint, method, data) {
+                    console.log('API Call:', endpoint, method, data);
+                    
+                    // Имитация задержки сети
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                    
+                    const token = localStorage.getItem('nevervpn_token');
+                    
+                    if (endpoint === '/auth/telegram') {
+                        // Проверяем код авторизации (формат: 2 цифры + telegram_id + 2 цифры)
+                        const authCode = data.code;
+                        if (authCode && authCode.length >= 4) {
+                            return {
+                                success: true,
+                                data: {
+                                    token: 'mock_jwt_token_' + Date.now(),
+                                    user: {
+                                        id: Math.floor(Math.random() * 1000) + 1,
+                                        telegram_id: 123456789,
+                                        username: 'demo_user',
+                                        first_name: 'Демо',
+                                        balance: 15,
+                                        days_left: 20,
+                                        is_active: true,
+                                        auth_code: authCode,
+                                        referral_link: 'https://nevervpn.net/ref/demo123'
+                                    }
+                                }
+                            };
+                        } else {
+                            return {
+                                success: false,
+                                message: 'Неверный код авторизации'
+                            };
+                        }
+                    }
+                    
+                    if (endpoint === '/user/profile' && token) {
+                        return {
+                            success: true,
+                            data: {
+                                id: 1,
+                                telegram_id: 123456789,
+                                username: 'demo_user',
+                                first_name: 'Демо',
+                                balance: 15,
+                                days_left: 20,
+                                is_active: true,
+                                auth_code: '123456789012',
+                                referral_link: 'https://nevervpn.net/ref/demo123',
+                                referral_count: 5
+                            }
+                        };
+                    }
+                    
+                    if (endpoint === '/payment/create') {
+                        let bonus = 0;
+                        if (data.amount === 200) bonus = 10;
+                        else if (data.amount === 500) bonus = 50;
+                        else if (data.amount === 1000) bonus = 150;
+                        
+                        return {
+                            success: true,
+                            message: 'Платеж создан',
+                            data: {
+                                payment_url: 'https://example.com/payment/' + Date.now(),
+                                amount: data.amount,
+                                bonus: bonus
+                            }
+                        };
+                    }
+                    
+                    if (endpoint === '/subscription/extend') {
+                        return {
+                            success: true,
+                            message: 'Подписка продлена'
+                        };
+                    }
+                    
+                    if (endpoint === '/user/transactions') {
+                        return {
+                            success: true,
+                            data: [
+                                {
+                                    id: 1,
+                                    type: 'deposit',
+                                    amount: 100,
+                                    created_at: new Date(Date.now() - 86400000).toISOString()
+                                },
+                                {
+                                    id: 2,
+                                    type: 'withdrawal',
+                                    amount: 50,
+                                    created_at: new Date(Date.now() - 172800000).toISOString()
+                                },
+                                {
+                                    id: 3,
+                                    type: 'referral',
+                                    amount: 50,
+                                    created_at: new Date(Date.now() - 259200000).toISOString()
+                                }
+                            ]
+                        };
+                    }
+                    
+                    if (endpoint === '/auth/logout') {
+                        return {
+                            success: true,
+                            message: 'Logged out'
+                        };
+                    }
+                    
+                    return {
+                        success: false,
+                        message: 'Endpoint not implemented'
+                    };
+                }
+            };
+            
+            // Переопределяем apiCall для демонстрации
+            const originalApiCall = NeverVPN.prototype.apiCall;
+            NeverVPN.prototype.apiCall = async function(endpoint, method = 'GET', data = null) {
+                try {
+                    return await originalApiCall.call(this, endpoint, method, data);
+                } catch (error) {
+                    // Если бэкенд недоступен, используем мок
+                    console.log('Using mock API due to backend unavailability');
+                    return await window.mockAPI.call(endpoint, method, data);
+                }
+            };
+        }
+    </script>
+</body>
+</html>
