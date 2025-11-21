@@ -366,6 +366,17 @@
             color: var(--subtitle-color);
         }
 
+        .referral-link {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            padding: 12px;
+            margin: 15px 0;
+            word-break: break-all;
+            font-size: 12px;
+            font-family: monospace;
+        }
+
         /* Instructions Section */
         .instructions-title {
             text-transform: uppercase;
@@ -1131,7 +1142,7 @@
             <div class="telegram-auth">
                 <p>Для входа через Telegram:</p>
                 <ol>
-                    <li>Перейдите в нашего бота: <strong>@NeverVPNBot</strong></li>
+                    <li>Перейдите в нашего бота: <strong>@vpnever_bot</strong></li>
                     <li>Отправьте команду <code>/start</code></li>
                     <li>Получите код авторизации</li>
                     <li>Введите код ниже</li>
@@ -1159,7 +1170,7 @@
                 <label for="directAuthCode">Код авторизации</label>
                 <input type="text" id="directAuthCode" placeholder="Введите ваш код авторизации">
                 <p style="margin-top: 10px; font-size: 12px; color: var(--subtitle-color);">
-                    Получите код в нашем Telegram боте: @NeverVPNBot
+                    Получите код в нашем Telegram боте: @vpnever_bot
                 </p>
             </div>
             <button class="btn btn-primary" id="confirmDirectAuth">
@@ -1467,7 +1478,12 @@
                         <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjYwIiBoZWlnaHQ9IjYwIiByeD0iMTIiIGZpbGw9IiNGRjZCMzUiLz4KPHN2ZyB4PSIyMCIgeT0iMTgiIHdpZHRoPSIyMCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDIwIDI0IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cGF0aCBkPSJNMTUgMTZIMTdWMTJIMjBMMTAgMEwwIDEySDNWMTZINS4wNjZDNi4xMzMgMTYgNy4xIDExLjY0IDcuMSAxMkM3LjEgMTQuNzYgOC4xNjY3IDE2IDEwLjMgMTZDMTEuMzY2NyAxNiAxMi4yMzMzIDE1LjIgMTIuOSAxNEMxMy41NjY3IDE0LjggMTQuNDMzMyAxNiAxNS43IDE2QzE3LjgzMzMgMTYgMTguOSAxNC43NiAxOC45IDEyQzE4LjkgMTEuNjQgMTkuODY2NyAxNiAyMC45MzMzIDE2SDIzVjhIMjBMMTAgLTRMMCA4SDNWMTZINS4wNjZDNi4xMzMgMTYgNy4xIDExLjY0IDcuMSAxMkM3LjEgMTQuNzYgOC4xNjY3IDE2IDEwLjMgMTZDMTEuMzY2NyAxNiAxMi4yMzMzIDE1LjIgMTIuOSAxNEMxNS41NjY3IDE0LjggMTQuNDMzMyAxNiAxNS43IDE2WiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+Cjwvc3ZnPg==" alt="Punch Inverted">
                     </div>
                     <h4 class="referral-title">Пригласи друга и получи 50 ₽ на баланс</h4>
-                    <div class="referral-subtitle">Отправьте ссылку другу. Когда ваш друг зайдёт на наш сайт и зарегистрируется, вы получите 50 ₽ на баланс!</div>
+                    <div class="referral-subtitle" id="referralSubtitle">
+                        Отправьте ссылку другу. Когда ваш друг зайдёт на наш сайт и зарегистрируется, вы получите 50 ₽ на баланс!
+                    </div>
+                    <div class="referral-link" id="referralLinkContainer" style="display: none;">
+                        <span id="referralLinkText">Загрузка...</span>
+                    </div>
                     <div class="btn-group">
                         <button class="btn btn-primary" id="shareReferral">
                             <i class="fas fa-share-alt"></i> Отправить
@@ -1557,6 +1573,7 @@
                 this.selectedAmount = null;
                 this.selectedMethod = null;
                 this.paymentStep = 1;
+                this.referralLink = null;
                 this.init();
             }
 
@@ -1755,10 +1772,13 @@
                 this.closeAllModals();
             }
 
-            showDashboard() {
+            async showDashboard() {
                 document.getElementById('loginPage').style.display = 'none';
                 document.getElementById('dashboardPage').style.display = 'block';
                 this.updateDashboard();
+                
+                // Загружаем и отображаем реферальную ссылку
+                await this.loadReferralInfo();
             }
 
             updateDashboard() {
@@ -1784,6 +1804,46 @@
                     balanceSubtitle.textContent = 'Активируйте подписку для использования VPN';
                 } else {
                     balanceSubtitle.textContent = 'Баланс пополнен, VPN активен';
+                }
+            }
+
+            async loadReferralInfo() {
+                try {
+                    // Используем реферальную ссылку из данных пользователя
+                    if (this.userData && this.userData.referral_link) {
+                        this.referralLink = this.userData.referral_link;
+                        this.updateReferralUI();
+                    } else {
+                        // Fallback: генерируем ссылку на основе referral_code
+                        if (this.userData && this.userData.referral_code) {
+                            this.referralLink = `https://t.me/vpnever_bot?start=${this.userData.referral_code}`;
+                            this.updateReferralUI();
+                        } else {
+                            // Если ничего нет, используем демо-ссылку
+                            this.referralLink = 'https://t.me/vpnever_bot?start=demo';
+                            this.updateReferralUI();
+                        }
+                    }
+                } catch (error) {
+                    console.error('Failed to load referral info:', error);
+                    // Используем fallback
+                    this.referralLink = 'https://t.me/vpnever_bot?start=demo';
+                    this.updateReferralUI();
+                }
+            }
+
+            updateReferralUI() {
+                if (this.referralLink) {
+                    // Показываем контейнер с ссылкой
+                    const linkContainer = document.getElementById('referralLinkContainer');
+                    const linkText = document.getElementById('referralLinkText');
+                    const subtitle = document.getElementById('referralSubtitle');
+                    
+                    linkText.textContent = this.referralLink;
+                    linkContainer.style.display = 'block';
+                    
+                    // Обновляем subtitle
+                    subtitle.innerHTML = `Отправьте ссылку другу. Когда ваш друг зайдёт по ссылке и зарегистрируется, вы получите <strong>${REFERRAL_BONUS} ₽</strong> на баланс!`;
                 }
             }
 
@@ -2189,13 +2249,13 @@ MIIE...  # Здесь будет приватный ключ
             }
 
             copyReferralLink() {
-                const link = this.userData?.referral_link || 'https://nevervpn.net/ref/...';
+                const link = this.referralLink || this.userData?.referral_link || 'https://t.me/vpnever_bot?start=demo';
                 this.copyToClipboard(link);
                 this.showNotification('Успех', 'Реферальная ссылка скопирована!', 'success');
             }
 
             shareReferralLink() {
-                const link = this.userData?.referral_link || 'https://nevervpn.net/ref/...';
+                const link = this.referralLink || this.userData?.referral_link || 'https://t.me/vpnever_bot?start=demo';
                 const text = `Присоединяйся к NeverVPN Network! Безопасный и быстрый VPN. Используй мою ссылку: ${link}`;
                 
                 if (navigator.share) {
@@ -2342,7 +2402,9 @@ MIIE...  # Здесь будет приватный ключ
                                         days_left: 20,
                                         is_active: true,
                                         auth_code: authCode,
-                                        referral_link: 'https://nevervpn.net/ref/demo123'
+                                        referral_code: 'demo123',
+                                        referral_link: 'https://t.me/vpnever_bot?start=demo123',
+                                        referral_count: 5
                                     }
                                 }
                             };
@@ -2366,7 +2428,8 @@ MIIE...  # Здесь будет приватный ключ
                                 days_left: 20,
                                 is_active: true,
                                 auth_code: '123456789012',
-                                referral_link: 'https://nevervpn.net/ref/demo123',
+                                referral_code: 'demo123',
+                                referral_link: 'https://t.me/vpnever_bot?start=demo123',
                                 referral_count: 5
                             }
                         };
