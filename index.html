@@ -6,6 +6,7 @@
     <title>NeverVPN Network</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* Все стили остаются без изменений */
         :root {
             --primary-color: #FF6600;
             --accent-color: #FF6600;
@@ -566,6 +567,7 @@
             display: flex;
             flex-direction: column;
             gap: 15px;
+            margin-bottom: 25px;
         }
 
         /* Sidebar Menu */
@@ -1060,6 +1062,114 @@
             margin-top: 20px;
         }
 
+        /* Telegram Widget */
+        .telegram-widget {
+            background: linear-gradient(135deg, #0088CC, #00A2FF);
+            color: white;
+            border-radius: 16px;
+            padding: 25px 20px;
+            text-align: center;
+            margin-top: 25px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 25px rgba(0, 136, 204, 0.3);
+        }
+
+        .telegram-widget::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent,
+                rgba(255, 255, 255, 0.1),
+                rgba(255, 255, 255, 0.2),
+                rgba(255, 255, 255, 0.1),
+                transparent
+            );
+            animation: widgetShine 4s infinite linear;
+            transform: rotate(45deg);
+        }
+
+        @keyframes widgetShine {
+            0% {
+                transform: translateX(-100%) translateY(-100%) rotate(45deg);
+            }
+            100% {
+                transform: translateX(100%) translateY(100%) rotate(45deg);
+            }
+        }
+
+        .telegram-widget-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .telegram-widget-icon {
+            font-size: 42px;
+            color: white;
+            margin-bottom: 15px;
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.15);
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .telegram-widget-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .telegram-widget-text {
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 20px;
+            opacity: 0.95;
+            max-width: 300px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .telegram-widget-btn {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+            font-size: 15px;
+            width: 100%;
+            max-width: 250px;
+            margin: 0 auto;
+        }
+
+        .telegram-widget-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .container {
@@ -1106,6 +1216,27 @@
             .payment-amounts {
                 grid-template-columns: 1fr;
             }
+            
+            .telegram-widget {
+                padding: 20px 15px;
+                margin-top: 20px;
+            }
+            
+            .telegram-widget-icon {
+                font-size: 36px;
+                width: 60px;
+                height: 60px;
+                margin-bottom: 12px;
+            }
+            
+            .telegram-widget-title {
+                font-size: 16px;
+            }
+            
+            .telegram-widget-text {
+                font-size: 13px;
+                margin-bottom: 18px;
+            }
         }
     </style>
 </head>
@@ -1124,10 +1255,21 @@
                     <i class="fab fa-telegram"></i>
                     Войти через Telegram
                 </button>
-                <button class="btn btn-secondary" id="authCodeLogin">
-                    <i class="fas fa-key"></i>
-                    Войти по коду авторизации
-                </button>
+            </div>
+            
+            <!-- Telegram Widget -->
+            <div class="telegram-widget">
+                <div class="telegram-widget-content">
+                    <div class="telegram-widget-icon">
+                        <i class="fab fa-telegram"></i>
+                    </div>
+                    <h3 class="telegram-widget-title">Присоединяйтесь к нашему Telegram-каналу</h3>
+                    <p class="telegram-widget-text">Будьте в курсе последних новостей, получайте уведомления о новых серверах и специальных предложениях</p>
+                    <a href="https://t.me/vpnever_dev" class="telegram-widget-btn" target="_blank">
+                        <i class="fab fa-telegram"></i>
+                        Подписаться на канал
+                    </a>
+                </div>
             </div>
         </div>
     </div>
@@ -1156,27 +1298,6 @@
                     Подтвердить вход
                 </button>
             </div>
-        </div>
-    </div>
-
-    <!-- Direct Auth Code Modal -->
-    <div id="directAuthModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Вход по коду авторизации</h3>
-                <button class="close-modal">&times;</button>
-            </div>
-            <div class="form-group">
-                <label for="directAuthCode">Код авторизации</label>
-                <input type="text" id="directAuthCode" placeholder="Введите ваш код авторизации">
-                <p style="margin-top: 10px; font-size: 12px; color: var(--subtitle-color);">
-                    Получите код в нашем Telegram боте: @vpnever_bot
-                </p>
-            </div>
-            <button class="btn btn-primary" id="confirmDirectAuth">
-                <i class="fas fa-sign-in-alt"></i>
-                Войти
-            </button>
         </div>
     </div>
 
@@ -1474,8 +1595,8 @@
                 <!-- Referral Card -->
                 <div class="referral-block">
                     <div class="referral-images">
-                        <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjYwIiBoZWlnaHQ9IjYwIiByeD0iMTIiIGZpbGw9IiMwMDdBRkYiLz4KPHN2ZyB4PSIyMCIgeT0iMTgiIHdpZHRoPSIyMCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDIwIDI0IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cGF0aCBkPSJNMTUgMTZIMTdWMTJIMjBMMTAgMEwwIDEySDNWMTZINS4wNjZDNi4xMzMgMTYgNy4xIDExLjY0IDcuMSAxMkM3LjEgMTQuNzYgOC4xNjY3IDE2IDEwLjMgMTZDMTEuMzY2NyAxNiAxMi4yMzMzIDE1LjIgMTIuOSAxNEMxMy41NjY3IDE0LjggMTQuNDMzMyAxNiAxNS43IDE2QzE3LjgzMzMgMTYgMTguOSAxNC43NiAxOC45IDEyQzE4LjkgMTEuNjQgMTkuODY2NyAxNiAyMC45MzMzIDE2SDIzVjhIMjBMMTAgLTRMMCA4SDNWMTZINS4wNjZDNi4xMzMgMTYgNy4xIDExLjY0IDcuMSAxMkM3LjEgMTQuNzYgOC4xNjY3IDE2IDEwLjMgMTZDMTEuMzY2NyAxNiAxMi4yMzMzIDE1LjIgMTIuOSAxNEMxMy41NjY3IDE0LjggMTQuNDMzMyAxNiAxNS43IDE2WiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+Cjwvc3ZnPg==" alt="Punch">
-                        <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjYwIiBoZWlnaHQ9IjYwIiByeD0iMTIiIGZpbGw9IiNGRjZCMzUiLz4KPHN2ZyB4PSIyMCIgeT0iMTgiIHdpZHRoPSIyMCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDIwIDI0IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cGF0aCBkPSJNMTUgMTZIMTdWMTJIMjBMMTAgMEwwIDEySDNWMTZINS4wNjZDNi4xMzMgMTYgNy4xIDExLjY0IDcuMSAxMkM3LjEgMTQuNzYgOC4xNjY3IDE2IDEwLjMgMTZDMTEuMzY2NyAxNiAxMi4yMzMzIDE1LjIgMTIuOSAxNEMxMy41NjY3IDE0LjggMTQuNDMzMyAxNiAxNS43IDE2QzE3LjgzMzMgMTYgMTguOSAxNC43NiAxOC45IDEyQzE4LjkgMTEuNjQgMTkuODY2NyAxNiAyMC45MzMzIDE2SDIzVjhIMjBMMTAgLTRMMCA4SDNWMTZINS4wNjZDNi4xMzMgMTYgNy4xIDExLjY0IDcuMSAxMkM3LjEgMTQuNzYgOC4xNjY3IDE2IDEwLjMgMTZDMTEuMzY2NyAxNiAxMi4yMzMzIDE1LjIgMTIuOSAxNEMxNS41NjY3IDE0LjggMTQuNDMzMyAxNiAxNS43IDE2WiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+Cjwvc3ZnPg==" alt="Punch Inverted">
+                        <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2AiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcng9IjEyIiBmaWxsPSIjMDA3QUZGIi8+PHN2ZyB4PSIyMCIgeT0iMTgiIHdpZHRoPSIyMCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDIwIDI0IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXRoIGQ9Ik0xNSAxNkgxN1YxMkgyMEwxMCAwTDAgMTJIM1YxNkg1LjA2NkM2LjEzMyAxNiA3LjEgMTEuNjQgNy4xIDEyQzcuMSAxNC43NiA4LjE2NjcgMTYgMTAuMyAxNkMxMS4zNjY3IDE2IDEyLjIzMzMgMTUuMiAxMi45IDE0QzEzLjU2NjcgMTQuOCAxNC40MzMzIDE2IDE1LjcgMTZDMTcuODMzMyAxNiAxOC45IDE0Ljc2IDE4LjkgMTJDMTguOSAxMS42NCAxOS44NjY3IDE2IDIwLjkzMzMgMTZIMjNWOEgyMEwxMCAtNEwwIDhIM1YxNkg1LjA2NkM2LjEzMyAxNiA3LjEgMTEuNjQgNy4xIDEyQzcuMSAxNC43NiA4LjE2NjcgMTYgMTAuMyAxNkMxMS4zNjY3IDE2IDEyLjIzMzMgMTUuMiAxMi45IDE0QzEzLjU2NjcgMTQuOCAxNC40MzMzIDE2IDE1LjcgMTZaIiBmaWxsPSJ3aGl0ZSIvPjwvc3ZnPjwvc3ZnPg==" alt="Punch">
+                        <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHJ4PSIxMiIgZmlsbD0iI0ZGNkIzNSIvPjxzdmcgeD0iMjAiIHk9IjE4IiB3aWR0aD0iMjAiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyMCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMTUgMTZIMTdWMTJIMjBMMTAgMEwwIDEySDNWMTZINS4wNjZDNi4xMzMgMTYgNy4xIDExLjY0IDcuMSAxMkM3LjEgMTQuNzYgOC4xNjY3IDE2IDEwLjMgMTZDMTEuMzY2NyAxNiAxMi4yMzMzIDE1LjIgMTIuOSAxNEMxMy41NjY3IDE0LjggMTQuNDMzMyAxNiAxNS43IDE2QzE3LjgzMzMgMTYgMTguOSAxNC43NiAxOC45IDEyQzE4LjkgMTEuNjQgMTkuODY2NyAxNiAyMC45MzMzIDE2SDIzVjhIMjBMMTAgLTRMMCA4SDNWMTZINS4wNjZDNi4xMzMgMTYgNy4xIDExLjY0IDcuMSAxMkM3LjEgMTQuNzYgOC4xNjY3IDE2IDEwLjMgMTZDMTEuMzY2NyAxNiAxMi4yMzMzIDE1uMiAxMi45IDE0QzE1LjU2NjcgMTQuOCAxNC40MzMzIDE2IDE1LjcgMTZaIiBmaWxsPSJ3aGl0ZSIvPjwvc3ZnPjwvc3ZnPg==" alt="Punch Inverted">
                     </div>
                     <h4 class="referral-title">Пригласи друга и получи 50 ₽ на баланс</h4>
                     <div class="referral-subtitle" id="referralSubtitle">
@@ -1586,7 +1707,6 @@
             setupEventListeners() {
                 // Auth buttons
                 document.getElementById('telegramLogin').addEventListener('click', () => this.showTelegramAuth());
-                document.getElementById('authCodeLogin').addEventListener('click', () => this.showDirectAuth());
                 
                 // Modal controls
                 document.querySelectorAll('.close-modal').forEach(btn => {
@@ -1595,7 +1715,6 @@
 
                 // Forms
                 document.getElementById('confirmTelegramAuth').addEventListener('click', () => this.handleTelegramAuth());
-                document.getElementById('confirmDirectAuth').addEventListener('click', () => this.handleDirectAuth());
 
                 // Dashboard buttons
                 document.getElementById('copyReferral').addEventListener('click', () => this.copyReferralLink());
@@ -1852,11 +1971,6 @@
                 document.getElementById('telegramModal').classList.add('active');
             }
 
-            showDirectAuth() {
-                this.closeAllModals();
-                document.getElementById('directAuthModal').classList.add('active');
-            }
-
             showSettingsModal() {
                 this.closeAllModals();
                 document.getElementById('settingsModal').classList.add('active');
@@ -1961,32 +2075,6 @@
                 }
             }
 
-            async handleDirectAuth() {
-                const authCode = document.getElementById('directAuthCode').value.trim();
-                
-                if (!authCode) {
-                    this.showNotification('Ошибка', 'Введите код авторизации', 'error');
-                    return;
-                }
-
-                try {
-                    const response = await this.apiCall('/auth/telegram', 'POST', { code: authCode });
-                    
-                    if (response.success) {
-                        localStorage.setItem('nevervpn_token', response.data.token);
-                        this.userData = response.data.user;
-                        this.showDashboard();
-                        this.closeAllModals();
-                        this.showNotification('Успех', 'Вход выполнен', 'success');
-                    } else {
-                        this.showNotification('Ошибка', response.message || 'Неверный код авторизации', 'error');
-                    }
-                } catch (error) {
-                    console.error('Direct auth failed:', error);
-                    this.showNotification('Ошибка', 'Ошибка соединения с сервером', 'error');
-                }
-            }
-
             async processPayment(amount, method) {
                 try {
                     const response = await this.apiCall('/payment/create', 'POST', { 
@@ -2049,9 +2137,14 @@
                     const response = await this.apiCall('/subscription/extend', 'POST', { days: parseInt(days) });
                     
                     if (response.success) {
+                        // Обновляем данные пользователя
                         this.userData.balance -= cost;
                         this.userData.days_left += parseInt(days);
                         this.userData.is_active = true;
+                        
+                        // Синхронизируем с ботом
+                        await this.syncWithBot();
+                        
                         this.updateDashboard();
                         this.closeAllModals();
                         this.showNotification('Успех', `Подписка продлена на ${days} дней`, 'success');
@@ -2061,6 +2154,19 @@
                 } catch (error) {
                     console.error('Subscription error:', error);
                     this.showNotification('Ошибка', 'Ошибка соединения с сервером', 'error');
+                }
+            }
+
+            async syncWithBot() {
+                try {
+                    // Синхронизируем данные с ботом
+                    await this.apiCall('/user/sync', 'POST', {
+                        balance: this.userData.balance,
+                        days_left: this.userData.days_left,
+                        is_active: this.userData.is_active
+                    });
+                } catch (error) {
+                    console.error('Sync with bot failed:', error);
                 }
             }
 
